@@ -11,6 +11,11 @@
 # You may also want to run this script manually and one by one, copy pasting commands into your terminal.
 
 # all the setup stuff
+
+## paralleization
+export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
+export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
+
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -29,6 +34,7 @@ python -m scripts.tok_eval
 # train a small 4 layer model
 # I tuned this run to complete in about 30 minutes on my MacBook Pro M3 Max.
 # To get better results, try increasing num_iterations, or get other ideas from your favorite LLM.
+echo "base_train"
 python -m scripts.base_train \
     --depth=6 \
     --head-dim=64 \
@@ -42,10 +48,13 @@ python -m scripts.base_train \
     --sample-every=100 \
     --num-iterations=5000 \
     --run=$WANDB_RUN
+echo "base_eval"
 python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per-task=16
+
 
 # SFT (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
+echo "chat_sft"
 python -m scripts.chat_sft \
     --max-seq-len=512 \
     --device-batch-size=32 \
