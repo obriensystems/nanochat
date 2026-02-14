@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/9
 # Showing an example run for exercising some of the code paths on the CPU (or MPS on Macbooks)
 # This script was last updated/tuned on Jan 17, 2026.
 
@@ -16,10 +17,14 @@ mkdir -p $NANOCHAT_BASE_DIR
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 [ -d ".venv" ] || uv venv
 uv sync --extra cpu
-source .venv/bin/activate
+#source .venv/bin/activate
+# bash/win
+source .venv/Scripts/activate
 if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
 fi
+
+uv pip install "triton-windows<3.5"
 
 # train tokenizer on ~2B characters (~34 seconds on my MacBook Pro M3 Max)
 python -m nanochat.dataset -n 8
@@ -63,3 +68,4 @@ python -m scripts.chat_sft \
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
+
