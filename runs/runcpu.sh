@@ -29,26 +29,27 @@ python -m scripts.tok_eval
 # train a small 4 layer model
 # I tuned this run to complete in about 30 minutes on my MacBook Pro M3 Max.
 # To get better results, try increasing num_iterations, or get other ideas from your favorite LLM.
+# 32 batch for d 26
 python -m scripts.base_train \
-    --depth=6 \
+    --depth=24 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
-    --device-batch-size=32 \
-    --total-batch-size=16384 \
-    --eval-every=100 \
+    --device-batch-size=128 --eval-every=100 \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
     --sample-every=100 \
     --num-iterations=5000 \
     --run=$WANDB_RUN
+
+    #   --total-batch-size=16384 \
 python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per-task=16
 
 # SFT (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 python -m scripts.chat_sft \
     --max-seq-len=512 \
-    --device-batch-size=32 \
+    --device-batch-size=128 \
     --total-batch-size=16384 \
     --eval-every=200 \
     --eval-tokens=524288 \
