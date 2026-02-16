@@ -29,8 +29,11 @@ python -m scripts.tok_eval
 # train a small 4 layer model
 # I tuned this run to complete in about 30 minutes on my MacBook Pro M3 Max.
 # To get better results, try increasing num_iterations, or get other ideas from your favorite LLM.
+# batch 1 for d26 still too large
+print("scripts.base_train")
+
 python -m scripts.base_train \
-    --depth=6 \
+    --depth=8 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
@@ -42,9 +45,15 @@ python -m scripts.base_train \
     --sample-every=100 \
     --num-iterations=5000 \
     --run=$WANDB_RUN
+
+
+print("scripts.base_eval")
+
 python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per-task=16
 
-# SFT (~10 minutes on my MacBook Pro M3 Max)
+print("scripts.chat_sft")
+
+# Supervised finde tuning (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 python -m scripts.chat_sft \
     --max-seq-len=512 \
@@ -54,12 +63,12 @@ python -m scripts.chat_sft \
     --eval-tokens=524288 \
     --num-iterations=1500 \
     --run=$WANDB_RUN
-
+#    --total-batch-size=16384 \
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
 # Sometimes the model likes it if you first say Hi before you ask it questions.
-# python -m scripts.chat_cli -p "What is the capital of France?"
+python -m scripts.chat_cli -p "What is the capital of France?"
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
