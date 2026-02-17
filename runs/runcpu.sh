@@ -17,6 +17,7 @@
 #export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
 
 export DEPTH=8
+# note Tokens / micro-batch: must be = or < total batch of 16k
 export BATCH_SIZE=16
 export MODEL_TAG="d${DEPTH}"
 
