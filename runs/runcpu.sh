@@ -51,12 +51,13 @@ wait $DATASET_DOWNLOAD_PID
 # batch 1 for d26 still too large
 echo "scripts_base_train"
 
+# 16 too high for m4max on sft
 python -m scripts.base_train \
-    --depth=8 \
+    --depth=12 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
-    --device-batch-size=32 \
+    --device-batch-size=8 \
     --total-batch-size=16384 \
     --eval-every=100 \
     --eval-tokens=524288 \
@@ -77,7 +78,7 @@ curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-publ
 
 python -m scripts.chat_sft \
     --max-seq-len=512 \
-    --device-batch-size=32 \
+    --device-batch-size=8 \
     --total-batch-size=16384 \
     --eval-every=200 \
     --eval-tokens=524288 \
@@ -85,12 +86,12 @@ python -m scripts.chat_sft \
     --run=$WANDB_RUN
 
 #torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i sft
-python -m  scripts.chat_eval -i sft -g d8
+python -m  scripts.chat_eval -i sft -g d12
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
 # Sometimes the model likes it if you first say Hi before you ask it questions.
-python -m scripts.chat_cli -p "What is the capital of France?"
+python -m scripts.chat_cli -p "What is the capital of France?" -d12
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
