@@ -22,12 +22,28 @@ if [ -z "$WANDB_RUN" ]; then
 fi
 
 echo "downloading dataset"
+
+python -m nanochat.report reset
 # train tokenizer on ~2B characters (~34 seconds on my MacBook Pro M3 Max)
 python -m nanochat.dataset -n 8
+# Immediately also kick off downloading more shards in the background while tokenizer trains
+# Approximately 350 shards are needed for 10B tokens of data for pretraining.
+# The maximum total number of shards available in the entire dataset is 1822.
+python -m nanochat.dataset -n 370 &
+DATASET_DOWNLOAD_PID=$!
+
 #python -m scripts.tok_train --max-chars=2000000000
 # use default
 python -m scripts.tok_train
+# Immediately also kick off downloading more shards in the background while tokenizer trains
+# Approximately 350 shards are needed for 10B tokens of data for pretraining.
+# The maximum total number of shards available in the entire dataset is 1822.
+#python -m nanochat.dataset -n 370 &
 python -m scripts.tok_eval
+
+# Base model (pretraining)
+echo "Waiting for dataset download to complete..."
+wait $DATASET_DOWNLOAD_PID
 
 # train a small 4 layer model
 # I tuned this run to complete in about 30 minutes on my MacBook Pro M3 Max.
@@ -36,7 +52,7 @@ python -m scripts.tok_eval
 echo "scripts_base_train"
 
 python -m scripts.base_train \
-    --depth=10 \
+    --depth=4 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
@@ -58,6 +74,7 @@ echo "scripts_chat_sft"
 
 # Supervised fine tuning (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
+
 python -m scripts.chat_sft \
     --max-seq-len=512 \
     --device-batch-size=32 \
@@ -67,6 +84,8 @@ python -m scripts.chat_sft \
     --num-iterations=1500 \
     --run=$WANDB_RUN
 
+#torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i sft
+python -m  scripts.chat_eval -i sft -g d4
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
