@@ -24,7 +24,9 @@ fi
 echo "downloading dataset"
 # train tokenizer on ~2B characters (~34 seconds on my MacBook Pro M3 Max)
 python -m nanochat.dataset -n 8
-python -m scripts.tok_train --max-chars=2000000000
+#python -m scripts.tok_train --max-chars=2000000000
+# use default
+python -m scripts.tok_train
 python -m scripts.tok_eval
 
 # train a small 4 layer model
@@ -34,7 +36,7 @@ python -m scripts.tok_eval
 echo "scripts_base_train"
 
 python -m scripts.base_train \
-    --depth=8 \
+    --depth=10 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
@@ -54,7 +56,7 @@ python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per
 
 echo "scripts_chat_sft"
 
-# Supervised finde tuning (~10 minutes on my MacBook Pro M3 Max)
+# Supervised fine tuning (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 python -m scripts.chat_sft \
     --max-seq-len=512 \
@@ -64,7 +66,7 @@ python -m scripts.chat_sft \
     --eval-tokens=524288 \
     --num-iterations=1500 \
     --run=$WANDB_RUN
-#    --total-batch-size=16384 \
+
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
