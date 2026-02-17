@@ -1,3 +1,8 @@
+Issues
+- NVIDIA DGX Spark - https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/7
+- Apple Silicon - https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/8
+- NVIDIA windows/wsl - https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/9
+
 # nanochat
 
 ![nanochat logo](dev/nanochat.png)
