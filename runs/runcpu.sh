@@ -47,6 +47,7 @@ python -m scripts.base_train \
     --window-pattern=L \
     --max-seq-len=512 \
     --device-batch-size=$BATCH \
+    --total-batch-size=16384 \
     --eval-every=100 \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
@@ -63,6 +64,7 @@ echo "chat_sft"
 python -m scripts.chat_sft \
     --max-seq-len=512 \
     --device-batch-size=$BATCH \
+    --total-batch-size=16384 \
     --eval-every=200 \
     --eval-tokens=524288 \
     --num-iterations=1500 \
