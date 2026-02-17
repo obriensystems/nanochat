@@ -52,7 +52,7 @@ wait $DATASET_DOWNLOAD_PID
 echo "scripts_base_train"
 
 python -m scripts.base_train \
-    --depth=4 \
+    --depth=8 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
@@ -85,7 +85,7 @@ python -m scripts.chat_sft \
     --run=$WANDB_RUN
 
 #torchrun --standalone --nproc_per_node=1 -m scripts.chat_eval -- -i sft
-python -m  scripts.chat_eval -i sft -g d4
+python -m  scripts.chat_eval -i sft -g d8
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
