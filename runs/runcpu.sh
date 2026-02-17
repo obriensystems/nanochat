@@ -16,6 +16,12 @@
 #export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
 #export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
 
+export DEPTH=8
+export BATCH_SIZE=16
+export MODEL_TAG="d${DEPTH}"
+
+echo "Running: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
+
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -36,11 +42,11 @@ python -m scripts.tok_eval
 # To get better results, try increasing num_iterations, or get other ideas from your favorite LLM.
 echo "base_train"
 python -m scripts.base_train \
-    --depth=16 \
+    --depth=$DEPTH \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
-    --device-batch-size=32 \
+    --device-batch-size=$BATCH \
     --eval-every=100 \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
@@ -56,7 +62,7 @@ curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-publ
 echo "chat_sft"
 python -m scripts.chat_sft \
     --max-seq-len=512 \
-    --device-batch-size=32 \
+    --device-batch-size=$BATCH \
     --eval-every=200 \
     --eval-tokens=524288 \
     --num-iterations=1500 \
@@ -66,7 +72,7 @@ python -m scripts.chat_sft \
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
 # Sometimes the model likes it if you first say Hi before you ask it questions.
-python -m scripts.chat_cli -p "What is the capital of France?" --model-tag d16
+python -m scripts.chat_cli -p "What is the capital of France?" --model-tag $MODEL_TAG
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
