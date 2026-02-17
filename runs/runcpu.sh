@@ -62,6 +62,7 @@ python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per
 # SFT (~10 minutes on my MacBook Pro M3 Max)
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 echo "chat_sft"
+# output to ~/.cache/nanochat/chatsft_checkpoints/d$DEPTH = $MODEL_TAG
 python -m scripts.chat_sft \
     --max-seq-len=512 \
     --device-batch-size=$BATCH \
