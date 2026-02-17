@@ -13,14 +13,14 @@
 # all the setup stuff
 
 ## paralleization
-export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
-export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
+#export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
+#export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
 
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 [ -d ".venv" ] || uv venv
-uv sync --extra cpu
+uv sync --extra gpu
 source .venv/bin/activate
 if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
@@ -36,12 +36,11 @@ python -m scripts.tok_eval
 # To get better results, try increasing num_iterations, or get other ideas from your favorite LLM.
 echo "base_train"
 python -m scripts.base_train \
-    --depth=6 \
+    --depth=16 \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
     --device-batch-size=32 \
-    --total-batch-size=16384 \
     --eval-every=100 \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
@@ -58,7 +57,6 @@ echo "chat_sft"
 python -m scripts.chat_sft \
     --max-seq-len=512 \
     --device-batch-size=32 \
-    --total-batch-size=16384 \
     --eval-every=200 \
     --eval-tokens=524288 \
     --num-iterations=1500 \
@@ -68,7 +66,7 @@ python -m scripts.chat_sft \
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
 # Sometimes the model likes it if you first say Hi before you ask it questions.
-# python -m scripts.chat_cli -p "What is the capital of France?"
+python -m scripts.chat_cli -p "What is the capital of France?" --model-tag d16
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
