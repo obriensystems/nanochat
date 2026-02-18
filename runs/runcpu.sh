@@ -11,6 +11,16 @@
 # You may also want to run this script manually and one by one, copy pasting commands into your terminal.
 
 # all the setup stuff
+# michael at obrienlabs.dev modifications
+# for NVIDIA only
+#export CPU_GPU=gpu
+# for CPU and MPS (Apple GPU)
+export CPU_GPU=cpu
+export DEPTH=5
+# note Tokens / micro-batch: must be = or < total batch of 16k
+export BATCH_SIZE=32
+export MODEL_TAG="d${DEPTH}"
+export ITERATIONS=1000
 
 ## paralleization
 #export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
@@ -24,21 +34,14 @@ rm -rf ~/.cache/nanochat/chatsft_checkpoints/* -f
 rm -rf ~/.cache/nanochat/base_checkpoints/* -f
 rm -rf ~/.cache/nanochat/base_eval/* -f
 
-export DEPTH=5
-# note Tokens / micro-batch: must be = or < total batch of 16k
-export BATCH_SIZE=32
-export MODEL_TAG="d${DEPTH}"
-export ITERATIONS=1000
-
-echo "Running: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
-
+echo "Running: $CPU_GPU: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
 python -m nanochat.report reset
 
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
 command -v uv &> /dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 [ -d ".venv" ] || uv venv
-uv sync --extra cpu
+uv sync --extra $CPU_GPU
 source .venv/bin/activate
 if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
