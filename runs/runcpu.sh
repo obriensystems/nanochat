@@ -26,7 +26,6 @@ rm -rf ~/.cache/nanochat/base_checkpoints/* -f
 rm -rf ~/.cache/nanochat/base_eval/* -f
 
 echo "Running: $CPU_GPU: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
-python -m nanochat.report reset
 
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
@@ -37,6 +36,8 @@ source .venv/bin/activate
 if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
 fi
+
+python -m nanochat.report reset
 
 # train tokenizer on ~2B characters (~34 seconds on my MacBook Pro M3 Max)
 python -m nanochat.dataset -n 8
