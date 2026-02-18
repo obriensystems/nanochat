@@ -70,6 +70,7 @@ python -m scripts.chat_sft \
     --eval-every=200 \
     --eval-tokens=524288 \
     --num-iterations=1500 \
+    --model-tag=$MODEL_TAG
     --run=$WANDB_RUN
 
 # Chat with the model over CLI
@@ -80,3 +81,5 @@ python -m scripts.chat_cli -p "What is the capital of France?" --model-tag $MODE
 
 # Chat with the model over a pretty WebUI ChatGPT style
 # python -m scripts.chat_web
+
+echo "Ran: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
