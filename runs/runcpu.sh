@@ -12,19 +12,7 @@
 
 # all the setup stuff
 # michael at obrienlabs.dev modifications
-# for NVIDIA only
-#export CPU_GPU=gpu
-# for CPU and MPS (Apple GPU)
-export CPU_GPU=cpu
-export DEPTH=5
-# note Tokens / micro-batch: must be = or < total batch of 16k
-export BATCH_SIZE=32
-export MODEL_TAG="d${DEPTH}"
-export ITERATIONS=1000
-
-## paralleization
-#export OMP_NUM_THREADS=$(sysctl -n hw.ncpu)
-#export MKL_NUM_THREADS=$(sysctl -n hw.ncpu)
+source vars.sh
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo $timestamp
@@ -72,7 +60,7 @@ python -m scripts.base_train \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
     --sample-every=100 \
-    --num-iterations=$ITERATIONS \
+    --num-iterations=$ITERATIONS_BASE_TRAIN \
     --run=$WANDB_RUN
     #    --fp8 \
     #--target-param-data-ratio=8.25 \
@@ -88,11 +76,11 @@ python -m scripts.chat_sft \
     --device-batch-size=$BATCH_SIZE \
     --eval-every=200 \
     --model-tag=$MODEL_TAG \
-    --num-iterations=1500 \
+    --num-iterations=$ITERATIONS_SFT \
     --run=$WANDB_RUN \
     --max-seq-len=512 \
-    --eval-tokens=524288 
-    --total-batch-size=16384
+    --eval-tokens=524288 \
+    --total-batch-size=$TOTAL_BATCH_SIZE
 
 # python -m scripts.chat_eval -i sft -g $MODEL_TAG
 
