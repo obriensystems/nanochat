@@ -70,7 +70,7 @@ python -m scripts.chat_sft \
     --eval-every=200 \
     --eval-tokens=524288 \
     --num-iterations=1500 \
-    --model-tag=$MODEL_TAG
+    --model-tag=$MODEL_TAG \
     --run=$WANDB_RUN
 
 # Chat with the model over CLI
