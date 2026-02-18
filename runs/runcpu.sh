@@ -28,6 +28,7 @@ export DEPTH=5
 # note Tokens / micro-batch: must be = or < total batch of 16k
 export BATCH_SIZE=32
 export MODEL_TAG="d${DEPTH}"
+export ITERATIONS=1000
 
 echo "Running: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
 
@@ -68,7 +69,7 @@ python -m scripts.base_train \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
     --sample-every=100 \
-    --num-iterations=2000 \
+    --num-iterations=$ITERATIONS \
     --run=$WANDB_RUN
     #    --fp8 \
     #--target-param-data-ratio=8.25 \
