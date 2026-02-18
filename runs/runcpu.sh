@@ -44,13 +44,13 @@ python -m nanochat.dataset -n 8
 # Immediately also kick off downloading more shards in the background while tokenizer trains
 # Approximately 350 shards are needed for 10B tokens of data for pretraining.
 # The maximum total number of shards available in the entire dataset is 1822.
-python -m nanochat.dataset -n 370 &
-DATASET_DOWNLOAD_PID=$!
+#python -m nanochat.dataset -n 370 &
+#DATASET_DOWNLOAD_PID=$!
 python -m scripts.tok_train --max-chars=2000000000
 python -m scripts.tok_eval
 
-echo "Waiting for dataset download to complete..."
-wait $DATASET_DOWNLOAD_PID
+#echo "Waiting for dataset download to complete..."
+#wait $DATASET_DOWNLOAD_PID
 
 echo "base_train"
 # 4 batch for d26
