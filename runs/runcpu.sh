@@ -89,11 +89,10 @@ python -m scripts.chat_sft \
     --eval-every=200 \
     --model-tag=$MODEL_TAG \
     --num-iterations=1500 \
-    --run=$WANDB_RUN
-    #--max-seq-len=512 \
-    #--eval-tokens=524288 \
-    #--num-iterations=1500 \
-    #--total-batch-size=16384 \
+    --run=$WANDB_RUN \
+    --max-seq-len=512 \
+    --eval-tokens=524288 
+    --total-batch-size=16384
 
 # python -m scripts.chat_eval -i sft -g $MODEL_TAG
 
