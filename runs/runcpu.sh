@@ -12,7 +12,10 @@
 
 # all the setup stuff
 # michael at obrienlabs.dev modifications
+
+# source from both locations in case we run from ./ or runs/
 source vars.sh
+source runs/vars.sh
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo $timestamp
