@@ -47,7 +47,7 @@ python -m scripts.base_train \
     --head-dim=64 \
     --window-pattern=L \
     --max-seq-len=512 \
-    --device-batch-size=$BATCH \
+    --device-batch-size=$BATCH_SIZE \
     --total-batch-size=16384 \
     --eval-every=100 \
     --eval-tokens=524288 \
@@ -65,7 +65,7 @@ echo "chat_sft"
 # output to ~/.cache/nanochat/chatsft_checkpoints/d$DEPTH = $MODEL_TAG
 python -m scripts.chat_sft \
     --max-seq-len=512 \
-    --device-batch-size=$BATCH \
+    --device-batch-size=$BATCH_SIZE \
     --total-batch-size=16384 \
     --eval-every=200 \
     --eval-tokens=524288 \
