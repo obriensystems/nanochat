@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#- andrej.karpathy Nanochat on NVIDIA DGX Spark GB10 - https://github.com/ObrienlabsDev/blog/issues/170
+#- https://github.com/obriensystems/nanochat/blob/dev/runs/runcpu.sh#L79
+#- DGX Spark https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/7
+#- Apple Silicon https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/8
+#- Windows/WSL NVIDIA https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/9
+
 # michael at obrienlabs.dev modifications
 # for NVIDIA only
 #export CPU_GPU=gpu
