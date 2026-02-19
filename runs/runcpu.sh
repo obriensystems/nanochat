@@ -37,7 +37,7 @@ if [ -z "$WANDB_RUN" ]; then
     WANDB_RUN=dummy
 fi
 
-python -m nanochat.report reset
+#python -m nanochat.report reset
 
 # train tokenizer on ~2B characters (~34 seconds on my MacBook Pro M3 Max)
 python -m nanochat.dataset -n 8
@@ -60,6 +60,7 @@ python -m scripts.base_train \
     --window-pattern=L \
     --max-seq-len=512 \
     --device-batch-size=$BATCH_SIZE \
+    --total-batch-size=$TOTAL_BATCH_SIZE \
     --eval-every=100 \
     --eval-tokens=524288 \
     --core-metric-every=-1 \
@@ -78,17 +79,18 @@ echo "chat_sft"
 curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 
 python -m scripts.chat_sft \
+    --max-seq-len=512 \
     --device-batch-size=$BATCH_SIZE \
+    --total-batch-size=$TOTAL_BATCH_SIZE \
+    --eval-every=200 \
+    --eval-tokens=524288 \
     --model-tag=$MODEL_TAG \
     --num-iterations=$ITERATIONS_SFT \
     --run=$WANDB_RUN \
-    --max-seq-len=512 \
-    --eval-tokens=524288 \
-    --total-batch-size=$TOTAL_BATCH_SIZE
     #--eval-every=200 \ cause 4x vram spike
 # python -m scripts.chat_eval -i sft -g $MODEL_TAG
 
-python -m nanochat.report generate
+#python -m nanochat.report generate
 # Chat with the model over CLI
 # The model should be able to say that it is Paris.
 # It might even know that the color of the sky is blue.
