@@ -70,12 +70,13 @@ python -m scripts.base_train \
     #--target-param-data-ratio=8.25 \
 
 echo "base_eval"
-python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per-task=16
+#python -m scripts.base_eval --device-batch-size=1 --split-tokens=16384 --max-per-task=16
 #python -m scripts.chat_eval -i sft -g $MODEL_TAG
 
 # SFT
-curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
 echo "chat_sft"
+curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-public.s3.us-west-2.amazonaws.com/identity_conversations.jsonl
+
 python -m scripts.chat_sft \
     --device-batch-size=$BATCH_SIZE \
     --eval-every=200 \
