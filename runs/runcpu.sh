@@ -25,7 +25,7 @@ rm -rf ~/.cache/nanochat/chatsft_checkpoints/* -f
 rm -rf ~/.cache/nanochat/base_checkpoints/* -f
 rm -rf ~/.cache/nanochat/base_eval/* -f
 
-echo "Running: $CPU_GPU: depth:$DEPTH batch:$BATCH_SIZE model:$MODEL_TAG"
+echo "Running: $CPU_GPU: depth:$DEPTH batch:$BATCH_SIZE batch_sft: $BATCH_SIZE_SFT model:$MODEL_TAG"
 
 export NANOCHAT_BASE_DIR="$HOME/.cache/nanochat"
 mkdir -p $NANOCHAT_BASE_DIR
@@ -80,7 +80,7 @@ curl -L -o $NANOCHAT_BASE_DIR/identity_conversations.jsonl https://karpathy-publ
 
 python -m scripts.chat_sft \
     --max-seq-len=512 \
-    --device-batch-size=$BATCH_SIZE \
+    --device-batch-size=$BATCH_SIZE_SFT \
     --total-batch-size=$TOTAL_BATCH_SIZE \
     --eval-every=200 \
     --eval-tokens=524288 \
@@ -104,4 +104,4 @@ timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo $timestamp
 END_TIME=$(date +%s)
 ELAPSED_TIME=$((END_TIME - START_TIME))
-echo "duration, $ELAPSED_TIME, depth, $DEPTH, batch, $BATCH_SIZE, model, $MODEL_TAG"
+echo "duration, $ELAPSED_TIME, depth, $DEPTH, batch, $BATCH_SIZE, batch_sft, $BATCH_SIZE_SFT, model, $MODEL_TAG"

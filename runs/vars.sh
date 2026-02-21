@@ -16,7 +16,8 @@ export CPU_GPU=cpu
 # change these
 export DEPTH=5
 # note Tokens / micro-batch: must be = or < total batch of 16k
-export BATCH_SIZE=32
+export BATCH_SIZE=8
+export BATCH_SIZE_SFT=1
 
 # keep these defaulted usually
 export ITERATIONS_BASE_TRAIN=1000
