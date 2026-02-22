@@ -86,7 +86,7 @@ python -m scripts.chat_sft \
     --eval-tokens=524288 \
     --model-tag=$MODEL_TAG \
     --num-iterations=$ITERATIONS_SFT \
-    --run=$WANDB_RUN \
+    --run=$WANDB_RUN 
     #--eval-every=200 \ cause 4x vram spike
 # python -m scripts.chat_eval -i sft -g $MODEL_TAG
 
