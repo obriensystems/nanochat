@@ -208,7 +208,8 @@ def sft_data_generator_bos_bestfit(split, buffer_size=100):
         nonlocal cursor, epoch
         while len(conv_buffer) < buffer_size:
             conversation = dataset[cursor]
-            ids, _ = tokenizer.render_conversation(conversation)
+            # Avoid BOS - beginning of sequence - only output
+            ids, _ = tokenizer.render_conversation(conversation, max_tokens=row_capacity)
             conv_buffer.append(ids)
             cursor += ddp_world_size
             if cursor >= dataset_size:
@@ -351,7 +352,10 @@ while True:
     if args.chatcore_every > 0 and (last_step or (step > 0 and step % args.chatcore_every == 0)):
         model.eval()
         engine = Engine(orig_model, tokenizer)
-        all_tasks = ['ARC-Easy', 'ARC-Challenge', 'MMLU', 'GSM8K', 'HumanEval', 'SpellingBee']
+        # avoid run_chat_eval exception runpy.py EOFError on python 3.10-3.12 - see https://github.com/ObrienlabsDev/foundation-transformer-llm/issues/8
+        # HumanEval is causing the exception only in OSX Apple Silicon - skip it
+        all_tasks = ['ARC-Easy', 'ARC-Challenge', 'MMLU', 'GSM8K', 'SpellingBee']
+        #all_tasks = ['ARC-Easy', 'ARC-Challenge', 'MMLU', 'GSM8K', 'HumanEval', 'SpellingBee']
         categorical_tasks = {'ARC-Easy', 'ARC-Challenge', 'MMLU'}
         baseline_accuracies = {
             'ARC-Easy': 0.25, 'ARC-Challenge': 0.25, 'MMLU': 0.25,
